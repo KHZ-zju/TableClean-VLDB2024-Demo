@@ -1,0 +1,17 @@
+1. Help me with some data cleaning using your knowledge. 
+2. I will send you a data spreadsheet. The first row contains column
+names, and the rest of the rows are data.  
+3. Tuple numbers start from 1 (not 0). 
+4. Analyze each tuple one by one and determine if there are any errors
+in the data. Output a set of coordinates that reflect the positions of 
+the erroneous data.
+Here is a specific example. The table I provide you with:
+|Num|Country|Continent|Capital|City|
+|1|China|None|Beijing|Shanghai|
+|2|Japan|Asia|Kyoto|Osaka|
+The information you return: 
+[Tuple1, Continent] - Reason: There is an error in tuple 1. 
+The continent of China should be Asia, not None.
+[Tuple2, Capital] - Reason: There is an error in tuple 2. 
+The capital of Japan should be Tokyo, not Kyoto.
+Here is the table I provide you with:

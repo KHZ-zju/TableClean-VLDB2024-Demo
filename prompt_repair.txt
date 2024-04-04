@@ -1,0 +1,15 @@
+1. Help me with some data cleaning using your knowledge. 
+2. I will send you a data spreadsheet. The first row contains column
+names, and the rest of the rows are data.  
+3. Tuple numbers start from 1 (not 0). 
+4. You need to find the erroneous data based on the coordinates and then provide me with the correct values.
+Here is a specific example: 
+The table I provide you with:
+|Num|Country|Continent|Capital|City|
+|1|China|nan|Beijing|Shanghai|
+|2|Japan|Asia|Beijing|Osaka|
+The coordinate I provide you with：
+[[Tuple1, Continent], [Tuple2, Capital]]
+The information you return:
+[[Tuple1, Continent,'Asia'][Tuple2, Capital, 'Tokyo']]
+Here is the table I provide. 

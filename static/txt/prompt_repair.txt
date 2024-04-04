@@ -1,0 +1,17 @@
+I need you to help me with some data cleaning using your general knowledge.
+I will send you a data spreadsheet. The first row contains column names, and the rest of the rows are data, with each row as a tuple.
+In addition, I will provide you with a list of coordinates that record the coordinates of erroneous data.
+You need to find the erroneous data based on the coordinates and then provide me with the correct values.
+For example, if the data in row 1, column 3, and the data in row 2, column 4 are incorrect, I will give you [1,3] [2,4].
+Row numbers and column numbers start from 1. Column names are not counted as rows, and the first column Num is included in the column count.
+Here is a specific example: 
+The table I provide you with:
+|Num|Country|Continent|Capital|City|
+|1|China|nan|Beijing|Shanghai|
+|2|Japan|Asia|Beijing|Osaka|
+The coordinate I provide you with：
+[[1,3], [2,4]]
+The information you return:
+[[1,3,'Asia'][2,4,'Tokyo']]
+Do not answer any other content!
+Here is the table I provide. 

@@ -1,0 +1,15 @@
+I need you to help me with some data cleaning using your general knowledge.
+I will send you a data spreadsheet. The first row contains column names, and the rest of the rows are data, with each row as a tuple.
+You need to analyze each tuple one by one and determine if there are any errors in the data.What you need to output is a set of coordinates that reflect the positions of the erroneous data. 
+For example, if the data in row 1, column 3, and the data in row 2, column 4 are incorrect, what you should return to me is [1,3] [2,4].
+Row numbers and column numbers start from 1. Column names are not counted as rows, and the first column Num is included in the column count.
+Here is a specific example: 
+The table I provide you with:
+|Num|Country|Continent|Capital|City|
+|1|China|None|Beijing|Shanghai|
+|2|Japan|Asia|Beijing|Osaka|
+The information you return: 
+[1,3] - Reason: There is an error in the data in row 1, column 3. The continent of China should not be None.
+[2,4] - Reason: There is an error in the data in row 2, column 4. The capital of Japan should not be Beijing.
+Do not answer any other content!
+Here is the table I provide. 

@@ -1,0 +1,58 @@
+body {
+    font-family: "Times New Roman", Times, serif !important;
+}
+
+#dataTable {
+    width: 100%;
+    border-collapse: separate;
+}
+
+#dataTable th,
+#dataTable td {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    padding: 8px;
+}
+
+.dataTables_scrollHead {
+    background-color: rgb(220, 220, 220);
+}
+
+.dataTable tbody td:hover {
+    background-color: rgb(240, 240, 240);
+}
+
+.custom-context-menu {
+    position: absolute;
+    background-color: rgb(204, 236, 255);
+    border: 0px solid rgb(204, 236, 255);
+    padding: 0px;
+    display: none;
+    border-radius: 5px; 
+}
+
+.custom-context-menu-item {
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px; 
+}
+
+.custom-context-menu-item:hover {
+    background-color: rgb(102, 204, 255); 
+}
+
+.explain_txt {
+    position: absolute;
+    background-color: #ffffff; 
+    border: 1px solid #cccccc; 
+    padding: 10px;
+    display: none;
+    border-radius: 5px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+    width: auto; 
+    max-width: 300px; 
+    z-index: 9999; 
+    text-align: center; 
+}

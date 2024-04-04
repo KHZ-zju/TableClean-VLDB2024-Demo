@@ -1,0 +1,21 @@
+Num,Country,Continent,Capital,City
+1,China,Asia,Beijing,Shanghai
+2,Japan,Asia,Tokyo,Osaka
+3,India,Asia,New Delhi,Mumbai
+4,United States,North America,Washington D.C.,New York City
+5,United Kingdom,Europe,,Manchester
+6,Germany,Asia,Berlin,Munich
+7,France,Europe,Paris,Marseille
+8,Canada,North America,Ottawa,Toronto
+9,Australia,Australia,Canberra,Sydney
+10,South Korea,Asia,Seoul,Busan
+11,Brazil,South America,,Rio de Janeiro
+12,Italy,Europe,Rome,Milan
+13,Spain,Europe,Madrid,Barcelona
+14,Malaysia,Europe,Kuala Lumpur,Penang
+15,Mexico,North America,Mexico City,Guadalajara
+16,Argentina,South America,Buenos Aires,Cordoba
+17,Morocco,Africa,Rabat,Casablanca
+18,Egypt,Africa,Cairo,Alexandria
+19,Greece,Europe,Athens,Thessaloniki
+20,Netherlands,Europe,Amsterdam,Rotterdam

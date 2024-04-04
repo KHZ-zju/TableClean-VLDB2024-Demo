@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TableClean</title>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css -->
+  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <!-- https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}">
+</head>
+
+<body>
+  <!-- system title -->
+  <nav class="navbar navbar-expand" style="background-color: rgb(0, 32, 96) ">
+    <div class="container-fluid">
+      <a href="#" class="navbar-brand" style="font-size: 35px; color:azure;">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" width="45" height="45"
+          class="d-inline-block align-text-top">
+        TableClean
+      </a>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <span class="navbar-text" style="font-size: 25px; color:azure;">
+          &nbsp&nbsp&nbsp&nbsp Interactive and Iterative Data Cleaning using LLM
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- process button -->
+  <ul class="nav nav-pills nav-justified" style="font-size: 28px; width:100%">
+    <li class="nav-item">
+      <a class="nav-link" aria-current="page" href="#" style="background-color: rgb(216, 216, 216); color:black;"
+        onclick="back_button_onclick()">
+        ➤ &nbsp&nbsp&nbsp Data Preprocessing</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="#"
+        style="background-color: rgb(0, 112, 192); color: azure; font-weight: bold;">
+        ➤&nbsp&nbsp&nbsp Interactive Cleaning</a>
+    </li>
+  </ul>
+
+  <!-- advice input -->
+  <div style="padding:0.3rem!important; width: 99%;">
+    <div class="row">
+      <div class="col-6">
+        <div class="card" style="width: 100.5%; height:20vh; background-color: rgb(0, 112, 192); border: none;">
+          <div class="card-body text-center">
+            <div class="card-title"
+              style="font-size: 25px; box-shadow:0.1px 0.1px 0.3px 0.3px black; background-color: white;">
+              Advice for Error Detection
+            </div>
+            <div class="card-text">&nbsp</div>
+            <div class="row">
+              <div class="col-9">
+                <input id="advice_detect" type="text" style="width: 100%; height:6vh;"
+                  placeholder="Please input your advice for Error Detection">
+              </div>
+              <div class="col-3">
+                <button class="btn btn-light" id="detect_submit_button"
+                  style="width: 100%; height:6vh; font-size: 25px; background-color: rgb(204, 236, 255);;" type="button"
+                  onclick="advice_detect_onclick()">
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card" style="width: 100%; height:20vh; background-color: rgb(0, 112, 192); border: none;">
+          <div class="card-body text-center">
+            <div class="card-title"
+              style="font-size: 25px; box-shadow:0.1px 0.1px 0.3px 0.3px black; background-color: white;">
+              Advice for Error Repair
+            </div>
+            <div class="card-text">&nbsp</div>
+            <div class="row">
+              <div class="col-9">
+                <input id="advice_repair" type="text" style="width: 100%; height:6vh;"
+                  placeholder="Please input your advice for Error Repair">
+              </div>
+              <div class="col-3">
+                <button class="btn btn-light" id="repair_submit_button"
+                  style="width: 100%; height:6vh; font-size: 25px; background-color: rgb(204, 236, 255);;" type="button"
+                  onclick="advice_repair_onclick()">
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- main content -->
+  <div class="card" style="width: 100%; height:50vh;">
+    <div class="card-body text-center" id="body_table">
+      <div class="card-title">
+        <div class="preview"
+          style="height: 7vh; font-size: 20px; font-weight: bold; border: 5px solid rgb(150, 150, 150); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between;">
+          <span id="filenamespan" style="width: 20%;"></span>
+          <span id="modespan"></span>
+          <img id="downloadimg" src="{{ url_for('static', filename='img/download.jpg') }}" alt="Logo" width="30"
+            height="30" class="d-inline-block align-text-top" onclick="download_button_onclick()"
+            style="cursor: pointer;">
+        </div>
+      </div>
+      <table id="dataTable" class="" style="width: 100%;"></table>
+    </div>
+  </div>
+
+  <!-- bottom buttons -->
+  <div id='bottom buttons'
+    style="display: flex; justify-content: space-between; align-items: center; padding:1.5rem!important;">
+    <button id="detect_button" class="btn btn-light"
+      style="width: 15%; height:6vh; font-size: 25px; background-color: rgb(204, 236, 255);; margin-left: 2%; margin-right: auto;"
+      type="button" onclick="detect_button_onclick()">Start to Detect</button>
+    <button id="back" class="btn btn-light"
+      style="width: 15%; height:6vh; font-size: 25px; background-color: rgb(204, 236, 255);; margin-left: auto; margin-right: auto;"
+      type="button" onclick="back_button_onclick()">Back</button>
+    <button id="repair_button" class="btn btn-light"
+      style="width: 15%; height:6vh; font-size: 25px; background-color: rgb(204, 236, 255);; margin-left: auto; margin-right: 2%;"
+      type="button" onclick="repair_button_onclick()">Start to Repair</button>
+  </div>
+
+  <!-- Detect_RightClick_Menu -->
+  <div id="detect_context-menu" class="custom-context-menu">
+    <div id="mark_correct" class="custom-context-menu-item">Mark as Correct</div>
+    <div id="explain_detect" class="custom-context-menu-item">Explain</div>
+  </div>
+
+  <!-- explain_window -->
+  <div class="explain_txt"></div>
+
+  <!-- Data_RightClick_Menu -->
+  <div id="data_context-menu" class="custom-context-menu">
+    <div id="mark_wrong" class="custom-context-menu-item">Mark as Wrong</div>
+  </div>
+
+
+  <!-- https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js -->
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+  <!-- https://code.jquery.com/jquery-3.7.1.min.js -->
+  <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+  <!-- https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js -->
+  <script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+
+  <!-- load data from server -->
+  <script>
+    var tableData = JSON.parse('{{ table_data_from_server | tojson | safe }}');// json data->JavaScript Object
+    var columnnames = tableData.columnnames; // Declare global variables
+    var data = tableData.data;
+    var filename = tableData.filename;
+
+    var detection_coordinate = {{ coordinate_from_server | safe }};
+    detection_coordinate = detection_coordinate.coordinate
+    console.log(detection_coordinate)
+
+    var mode = '{{ mode_from_server | safe }}';
+    var temp_button = document.getElementById("detect_button");
+    temp_button.disabled = true;
+
+    const filenameSpan = document.getElementById("filenamespan");
+    filenameSpan.textContent = `File name: ${filename}`;
+    const modeSpan = document.getElementById("modespan");
+    modeSpan.textContent = `Mode: ${mode}`;
+
+    if (mode == 'Detection') {
+      var temp_button = document.getElementById("detect_button");
+      temp_button.disabled = true;
+      temp_button = document.getElementById("repair_button");
+      temp_button.disabled = false;
+      temp_button = document.getElementById("repair_submit_button");
+      temp_button.disabled = true;
+      temp_button = document.getElementById("detect_submit_button");
+      temp_button.disabled = false;
+
+      render_dataTable_detect();
+    } else {
+      var temp_button = document.getElementById("repair_button");
+      temp_button.disabled = true;
+      temp_button = document.getElementById("detect_button");
+      temp_button.disabled = false;
+      temp_button = document.getElementById("detect_submit_button");
+      temp_button.disabled = true;
+      temp_button = document.getElementById("repair_submit_button");
+      temp_button.disabled = false;
+
+      render_dataTable_repair();
+    }
+
+    // render table - detect
+    function render_dataTable_detect() {
+      // clear table
+      if ($.fn.DataTable.isDataTable('#dataTable')) {
+        $('#dataTable').DataTable().clear().destroy();
+      }
+      // clear table head
+      $('#dataTable thead').empty();
+      var numColumns = columnnames.length;
+      var columnWidth = 100 / numColumns + '%';
+      $('#dataTable').DataTable({
+        "order": [],
+        "dom": '<"wrapper"ftip>',
+        //right click
+        "createdRow": function (row, dataIndex) {
+          $(row).find('td').on('contextmenu', function (event) {
+            event.preventDefault();
+
+            // get current page num(begin with 0)
+            var table = $('#dataTable').DataTable();
+            var pageInfo = table.page.info();
+            var currentPage = pageInfo.page;
+
+            // get cell rowIndex
+            const rowIndex = $(this).parent().index() + 1 + (10 * currentPage);
+            // get cell columnIndex
+            const columnIndex = $(this).index() + 1;
+
+            if (judge_coordinate(rowIndex, columnIndex) == 'detect/repair') {
+              // set right click menu position
+              $('#detect_context-menu').css({
+                left: event.pageX,
+                top: event.pageY,
+                display: 'block',
+              });
+
+              // handle mark_correct button event
+              $('#mark_correct').off('click').on('click', function () {
+                $('#dataTable tbody tr:eq(' + (rowIndex - 10 * currentPage - 1) + ') td:eq(' + (columnIndex - 1) + ')').css('background-color', '');
+                detection_coordinate = detection_coordinate.filter(function (coordinate) {
+                  return !(coordinate[0] === rowIndex && coordinate[1] === columnIndex);
+                });
+                console.log(detection_coordinate)
+
+                // hide right click menu
+                $('#detect_context-menu').css('display', 'none');
+              });
+
+              // handle explain_detect button event
+              $('#explain_detect').off('click').on('click', function () {
+                $('.explain_txt').css({
+                  left: event.pageX,
+                  top: event.pageY,
+                  display: 'block',
+                });
+                const explain_text = document.querySelector(".explain_txt");
+                while (explain_text.firstChild) {
+                  explain_text.removeChild(explain_text.firstChild);
+                }
+                var explain_str = null;
+                for (let i = 0; i < detection_coordinate.length; i++) {
+                  let temp_coor = detection_coordinate[i];
+                  if (temp_coor[0] === rowIndex && temp_coor[1] === columnIndex) {
+                    explain_str = temp_coor[2];
+                    break;
+                  }
+                }
+                const txtnode = document.createTextNode(explain_str);
+                explain_text.appendChild(txtnode)
+                // hide right click menu
+                $('#detect_context-menu').css('display', 'none');
+              });
+            } else {
+              $('#data_context-menu').css({
+                left: event.pageX,
+                top: event.pageY,
+                display: 'block',
+              });
+              // handle mark_wrong button event
+              $('#mark_wrong').off('click').on('click', function () {
+                $('#dataTable tbody tr:eq(' + (rowIndex - 10 * currentPage - 1) + ') td:eq(' + (columnIndex - 1) + ')').css('background-color', 'rgb(217, 149, 143)'); //red
+                let new_coor = [rowIndex, columnIndex, 'User manual annotation.'];
+                detection_coordinate.push(new_coor);
+                console.log(detection_coordinate)
+                // hide right click menu
+                $('#data_context-menu').css('display', 'none');
+              });
+            }
+          });
+        },
+
+        data: data,
+        columns: columnnames.map(function (columnName) {
+          return { title: columnName, width: columnWidth };
+        }),
+        "scrollY": "25vh",
+        "columnDefs": [
+          {
+            "orderable": false,
+            "className": "dt-center",
+            "targets": "_all"
+          },
+        ],
+        "drawCallback": function (settings) {
+          // clear former color
+          $('#dataTable tbody td').css('background-color', '');
+
+          detection_coordinate.forEach(function (coordinates) {
+            let rowIndex = coordinates[0] - 1;
+            let columnIndex = coordinates[1] - 1;
+            if (rowIndex >= settings._iDisplayStart && rowIndex < settings._iDisplayStart + settings._iDisplayLength) {
+              $('#dataTable tbody tr:eq(' + (rowIndex - settings._iDisplayStart) + ') td:eq(' + columnIndex + ')').css('background-color', 'rgb(217, 149, 143)');   //red
+            }
+          });
+        }
+      });
+    }
+
+    // render table - repair
+    function render_dataTable_repair() {
+      for (let i = 0; i < detection_coordinate.length; i++) {
+        let temp_coor = detection_coordinate[i];
+        data[temp_coor[0] - 1][temp_coor[1] - 1] = temp_coor[2]
+      }
+      // clear table
+      if ($.fn.DataTable.isDataTable('#dataTable')) {
+        $('#dataTable').DataTable().clear().destroy();
+      }
+      // clear table head
+      $('#dataTable thead').empty();
+      var numColumns = columnnames.length;
+      var columnWidth = 100 / numColumns + '%';
+      $('#dataTable').DataTable({
+        "order": [],
+        "dom": '<"wrapper"ftip>',
+
+        data: data,
+        columns: columnnames.map(function (columnName) {
+          return { title: columnName, width: columnWidth };
+        }),
+        "scrollY": "25vh",
+        "columnDefs": [
+          {
+            "orderable": false,
+            "className": "dt-center",
+            "targets": "_all"
+          },
+        ],
+        "drawCallback": function (settings) {
+          // clear former color
+          $('#dataTable tbody td').css('background-color', '');
+
+          detection_coordinate.forEach(function (coordinates) {
+            let rowIndex = coordinates[0] - 1;
+            let columnIndex = coordinates[1] - 1;
+            if (rowIndex >= settings._iDisplayStart && rowIndex < settings._iDisplayStart + settings._iDisplayLength) {
+              $('#dataTable tbody tr:eq(' + (rowIndex - settings._iDisplayStart) + ') td:eq(' + columnIndex + ')').css('background-color', 'rgb(255, 192, 0)');  //blue
+            }
+          });
+        }
+      });
+    }
+
+    function judge_coordinate(rowIndex, columnIndex) {
+      for (var i = 0; i < detection_coordinate.length; i++) {
+        var coordinate = detection_coordinate[i];
+        if (coordinate[0] === rowIndex && coordinate[1] === columnIndex) {
+          return "detect/repair";
+        }
+      }
+      return "data";
+    }
+
+    // hide right click menu when click other position
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest("#detect_context-menu")) {
+        $('#detect_context-menu').css('display', 'none');
+      }
+    });
+
+    // hide explain txt when click other position
+    document.addEventListener("click", function (event) {
+      if ((!event.target.closest(".explain_txt")) && (!event.target.closest("#detect_context-menu"))) {
+        $('.explain_txt').css('display', 'none');
+      }
+    });
+
+    // hide right click menu when click other position
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest("#data_context-menu")) {
+        $('#data_context-menu').css('display', 'none');
+      }
+    });
+
+  </script>
+
+  <!-- for Back button -->
+  <script>
+    function back_button_onclick() {
+      $.ajax({
+        type: "POST",
+        url: "/",
+        data: '',
+        contentType: "application/json",
+        success: function (response) {
+          window.location.href = "/";
+        },
+        error: function (error) {
+          console.error('Error:', error);
+        }
+      });
+    }
+  </script>
+
+  <!-- for download button -->
+  <script>
+    function download_button_onclick() {
+      // create csv content
+      var csvContent = "";
+      // append columnnames
+      csvContent += columnnames.join(",") + "\n";
+      // append data
+      data.forEach(function (row) {
+        csvContent += row.join(",") + "\n";
+      });
+      // create Blob object containing csv
+      var blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      // create a URL for download
+      var downloadLink = document.createElement("a");
+      downloadLink.href = window.URL.createObjectURL(blob);
+      downloadLink.setAttribute("download", `${filename}`);
+      // Trigger download
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+  </script>
+
+  <!-- for advice_detect -->
+  <script>
+    function advice_detect_onclick() {
+      var advice_detect_text = document.getElementById("advice_detect").value;
+      document.getElementById("advice_detect").value = "";
+      console.log("Detect Advice Text: " + advice_detect_text)
+
+      temp_button = document.getElementById("detect_button");
+      temp_button.disabled = true;
+      temp_button = document.getElementById("repair_button");
+      temp_button.disabled = false;
+
+      tableData.advice = advice_detect_text;
+
+      $.ajax({
+        type: "POST",
+        url: "/process",
+        data: JSON.stringify(tableData),
+        contentType: "application/json",
+        success: function (response) {
+          window.location.href = "/process";
+        },
+        error: function (error) {
+          console.error('Error:', error);
+        }
+      });
+    }
+  </script>
+
+  <!-- for advice_repair -->
+  <script>
+    function advice_repair_onclick() {
+      var advice_repair_text = document.getElementById("advice_repair").value;
+      document.getElementById("advice_repair").value = "";
+      console.log("Repair Advice Text: " + advice_repair_text)
+
+      if (detection_coordinate.length == 0) {
+        alert("There are no values in your data that need to be repaired.");
+        return 'correct'
+      }
+      temp_button = document.getElementById("repair_button");
+      temp_button.disabled = true;
+      temp_button = document.getElementById("detect_button");
+      temp_button.disabled = false;
+      const dictData = {
+        filename: filename,
+        columnnames: columnnames,
+        data: data,
+        coordinate: detection_coordinate,
+        advice: advice_repair_text
+      };
+      $.ajax({
+        type: "POST",
+        url: "/process/repair",
+        data: JSON.stringify(dictData),
+        contentType: "application/json",
+        success: function (response) {
+          window.location.href = "/process/repair";
+        },
+        error: function (error) {
+          console.error('Error:', error);
+        }
+      });
+    }
+  </script>
+
+  <!-- for start to repair button -->
+  <script>
+    function repair_button_onclick() {
+      if (detection_coordinate.length == 0) {
+        alert("There are no values in your data that need to be repaired.");
+        return 'correct'
+      }
+      temp_button = document.getElementById("repair_button");
+      temp_button.disabled = true;
+      temp_button = document.getElementById("detect_button");
+      temp_button.disabled = false;
+      const dictData = {
+        filename: filename,
+        columnnames: columnnames,
+        data: data,
+        coordinate: detection_coordinate,
+        advice: null
+      };
+      $.ajax({
+        type: "POST",
+        url: "/process/repair",
+        data: JSON.stringify(dictData),
+        contentType: "application/json",
+        success: function (response) {
+          window.location.href = "/process/repair";
+        },
+        error: function (error) {
+          console.error('Error:', error);
+        }
+      });
+    }
+  </script>
+
+  <!-- for start to detect button -->
+  <script>
+    function detect_button_onclick() {
+      temp_button = document.getElementById("detect_button");
+      temp_button.disabled = true;
+      temp_button = document.getElementById("repair_button");
+      temp_button.disabled = false;
+
+      tableData.advice = null;
+
+      $.ajax({
+        type: "POST",
+        url: "/process",
+        data: JSON.stringify(tableData),
+        contentType: "application/json",
+        success: function (response) {
+          window.location.href = "/process";
+        },
+        error: function (error) {
+          console.error('Error:', error);
+        }
+      });
+    }
+  </script>
+
+</body>
+
+</html>
